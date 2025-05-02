@@ -73,7 +73,7 @@ class RequestData:
     
 class RequestHandler(SimpleHTTPRequestHandler):
     """
-    A class that represents a PyPress Request Handler.
+    A class that represents a HTTPyServer Request Handler.
         `RequestHandler` handles the upcoming requests through
         user-defined callbacks. 
     

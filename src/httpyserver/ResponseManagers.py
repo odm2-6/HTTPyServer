@@ -14,7 +14,7 @@ doc_to_bytes = lambda doc: bytes(json.dumps(doc), "utf-8") if doc is not None el
 
 class Basic_Response ():
     """
-    Base class for all PyPress HTTP Responses.
+    Base class for all HTTPyServer Responses.
 
     Attributes:
         status_code (HTTP_CODES): The HTTP status code representing the request's result.
@@ -25,7 +25,7 @@ class Basic_Response ():
 
 class Basic_GET_Response (Basic_Response):
     """
-    A class that represents a PyPress HTTP Response to a GET request.
+    A class that represents a HTTPyServer Response to a GET request.
 
     It provides methods for redirecting requests, serving files, and retrieving database entries.
 
@@ -127,7 +127,7 @@ class Basic_GET_Response (Basic_Response):
         
 class Basic_POST_Response(Basic_Response):
     """
-    A class that represents a PyPress HTTP Response to a POST request.
+    A class that represents a HTTPyServer Response to a POST request.
 
     It provides methods for handling POST requests and inserting data into a database.
 
@@ -194,7 +194,7 @@ class Basic_POST_Response(Basic_Response):
 
 class Basic_PUT_Response(Basic_Response):
     """
-    A class that represents a PyPress HTTP Response to a PUT request.
+    A class that represents a HTTPyServer Response to a PUT request.
 
     It provides methods for updating or inserting data into a database based on a query.
 
@@ -217,29 +217,6 @@ class Basic_PUT_Response(Basic_Response):
     def __init__(self, collection_name: str, body: dict | list, query: dict[str, Any], model: Any):
         """
         Initializes a `Basic_PUT_Response` instance for a specified collection name, request body, and query.
-
-        Example:
-            ```python
-            class User:
-                username: str
-                email: str
-                age: int
-
-            new_user = {
-                "username": "johndoe05",
-                "email": "some_electronicmail@crazysite.com",
-                "age": 25
-            }
-
-            res = Basic_PUT_Response(
-                "users_collection",
-                new_user,
-                { "username": "johndoe05" },
-                User
-            )
-
-            res.send(f"/users/{new_user['username']}")
-            ```
 
         Args:
             collection_name (str): The database collection/table name where data will be updated or inserted.
@@ -269,6 +246,29 @@ class Basic_PUT_Response(Basic_Response):
 
         Args:
             path (str, optional): An optional path indicating the location of the resource.
+
+        Example:
+            ```python
+            class User:
+                username: str
+                email: str
+                age: int
+
+            new_user = {
+                "username": "johndoe05",
+                "email": "some_electronicmail@crazysite.com",
+                "age": 25
+            }
+
+            res = Basic_PUT_Response(
+                "users_collection",
+                new_user,
+                { "username": "johndoe05" },
+                User
+            )
+
+            res.send(f"/users/{new_user['username']}")
+            ```
         """
         if self.valid_model:
             doc = DB.get_from_db(self.collection_name, self.query)
@@ -291,10 +291,7 @@ class Basic_PUT_Response(Basic_Response):
         
 class Basic_PATCH_Response(Basic_Response):
     """
-    A class that represents a PyPress HTTP Response to a PATCH request.
-
-    This class enables partial updates to existing database entries.
-    It supports **MongoDB-style `$ operators`** for targeted field modifications.
+    A class that represents a HTTPyServer Response to a PATCH request.
 
     Attributes:
         status_code (HTTP_CODES): The HTTP status code representing the request's result.
@@ -317,12 +314,11 @@ class Basic_PATCH_Response(Basic_Response):
         Initializes a `Basic_PATCH_Response` instance for a specified collection name, request body, and query.
 
         **Important:** 
-        - PATCH operations rely on **MongoDB-style `$ operators`**, meaning the `body` dictionary 
-          should include operators like `$set`, `$inc`, or `$push` for modifying specific fields.
+        - If your database is a DB_Mongo instance, you'll need to use `$ operators` in your query in order to  
+        send your PATCH request.
 
         Example:
             ```python
-            # Example for MongoDB
             class User:
                 username: str
                 email: str
@@ -364,9 +360,6 @@ class Basic_PATCH_Response(Basic_Response):
         """
         Applies a PATCH update to the specified entry or multiple entries in the collection.
 
-        PATCH operations modify existing fields without replacing full documents.
-        This method utilizes **MongoDB-style `$ operators`** for targeted updates.
-
         Sets `status_code` to the following values depending on the request result:
             - `SUCCESS`: The entry was found and successfully updated.
             - `NO_CONTENT`: The request was processed, but no additional response content is provided.
@@ -393,7 +386,7 @@ class Basic_PATCH_Response(Basic_Response):
 
 class Basic_DELETE_Response(Basic_Response):
     """
-    A class that represents a PyPress HTTP Response to a DELETE request.
+    A class that represents a HTTPyServer Response to a DELETE request.
 
     This class handles the deletion of database entries based on a query.
 
@@ -415,7 +408,6 @@ class Basic_DELETE_Response(Basic_Response):
         Initializes a `Basic_DELETE_Response` instance for deleting database entries.
 
         **Note:** 
-        - If the specified collection/table does not exist, deletion cannot be performed.
         - The request is marked as `ACCEPTED` while preparing for deletion.
 
         Example:

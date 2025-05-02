@@ -16,7 +16,7 @@ from .Server_Exceptions import *
 
 class Server:
     """
-    A class that represents a PyPress HTTP server.
+    A class that represents a HTTP server from `HTTPyServer`.
 
     The `Server` class initializes an HTTP server, sets the root folder for `Basic_GET_Response`,
     and registers request handlers for various HTTP methods via `RequestHandler`.
